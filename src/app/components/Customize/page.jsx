@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Center, useGLTF, Environment } from "@react-three/drei";
+import { OrbitControls, Center, useGLTF, Environment ,Html} from "@react-three/drei";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CustomButton from "../Common/Buttons/page";
@@ -172,8 +172,16 @@ export default function VanCustomizer() {
               {/* <directionalLight position={[10, 10, 5]} intensity={1} /> */}
               <Environment files="./textures/zwartkops_straight_afternoon_1k.hdr" />
 
-              <Suspense fallback={null}>
-                <Center position={[0, 2, 0]}>
+              <Suspense  fallback={
+                        <Html fullscreen>
+                          <div className="w-full h-full flex items-center justify-center">
+                            <p className="mt-4 text-[#44444E] font-medium bg-none">
+                              Please wait here is a 3D Model
+                            </p>
+                          </div>
+                        </Html>
+                      }>
+                <Center position={[0, 0.5, 0]}>
                   {/* Van Body - stays in place */}
                   <VanPart
                     modelPath="/models/Van_Pebble.glb"
