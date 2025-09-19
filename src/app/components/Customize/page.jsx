@@ -5,6 +5,7 @@ import { OrbitControls, Center, useGLTF, Environment ,Html} from "@react-three/d
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CustomButton from "../Common/Buttons/page";
+import Loader from "../Loader/page";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -70,6 +71,8 @@ const VanPart = ({
 
   return <primitive ref={ref} object={scene} scale={1} />;
 };
+
+
 
 export default function VanCustomizer() {
   const sectionRef = useRef();
@@ -174,11 +177,7 @@ export default function VanCustomizer() {
 
               <Suspense  fallback={
                         <Html fullscreen>
-                          <div className="w-full h-full flex items-center justify-center">
-                            <p className="mt-4 text-[#44444E] font-medium bg-none">
-                              Please wait here is a 3D Model
-                            </p>
-                          </div>
+                          <Loader/>
                         </Html>
                       }>
                 <Center position={[0, 0.5, 0]}>
