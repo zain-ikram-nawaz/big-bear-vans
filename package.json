@@ -13,6 +13,8 @@
     "@react-three/fiber": "^9.3.0",
     "axios": "^1.12.1",
     "gsap": "^3.13.0",
+    "intro.js": "^8.3.2",
+    "lottie-react": "^2.4.1",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
