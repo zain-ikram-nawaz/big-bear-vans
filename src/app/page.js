@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useRef, useState } from "react";
 import Hero from "./components/Hero/page";
 import SectioSlider from "./components/SectionSlider/page";
@@ -10,8 +10,12 @@ import CustomVanSection from "./components/CustomVanSection/page";
 import Portfolio from "./components/Portfolio/page";
 import ReviewSlider from "./components/Review/page";
 import ShopSection from "./components/shop/page";
-import IntroJs from "intro.js";
+
+// ✅ Import IntroJs dynamically
+import dynamic from "next/dynamic";
+const IntroJs = dynamic(() => import("intro.js"), { ssr: false });
 import "intro.js/introjs.css";
+
 
 // Van Mascot SVG Component
 const VanMascot = ({ className }) => (
@@ -115,7 +119,7 @@ export default function Home() {
       }
     };
 
-  
+
     intro.start();
 
 
