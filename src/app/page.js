@@ -115,10 +115,10 @@ export default function Home() {
       }
     };
 
-    // Start the intro
+  
     intro.start();
 
-    // Add event listeners after intro is shown
+
     intro.onafterchange(() => {
       setTimeout(() => {
         document.getElementById("btn-van")?.addEventListener("click", () => scrollToRef(vanRef));
