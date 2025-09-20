@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CustomButton from "../Common/Buttons/page";
 import Loader from "../Loader/page";
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 const VanPart = ({
@@ -78,7 +79,7 @@ export default function VanCustomizer() {
   const sectionRef = useRef();
   const canvasWrapperRef = useRef();
   const textContentRef = useRef();
-  const [activePart, setActivePart] = useState(null);
+
 
   const parts = [
     {
@@ -156,11 +157,14 @@ export default function VanCustomizer() {
     }
   }, []);
 
+
   return (
+
     <section
       ref={sectionRef}
       className="w-full h-screen"
     >
+
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Bottom Layout: Canvas + Text */}
@@ -301,6 +305,7 @@ export default function VanCustomizer() {
           </div>
         </div>
       </div>
+
     </section>
   );
 }

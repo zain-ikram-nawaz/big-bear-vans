@@ -1,5 +1,10 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
 import Hero from "./components/Hero/page";
 import SectioSlider from "./components/SectionSlider/page";
 import StickyBottomBar from "./components/StickyBottomBar/page";
@@ -10,157 +15,117 @@ import CustomVanSection from "./components/CustomVanSection/page";
 import Portfolio from "./components/Portfolio/page";
 import ReviewSlider from "./components/Review/page";
 import ShopSection from "./components/shop/page";
+import Robo from "./components/models/robo";
 
-// ✅ Import IntroJs dynamically
-import dynamic from "next/dynamic";
-const IntroJs = dynamic(() => import("intro.js"), { ssr: false });
-import "intro.js/introjs.css";
-
-
-// Van Mascot SVG Component
-const VanMascot = ({ className }) => (
-  <svg className={className} width="120" height="120" viewBox="0 0 200 200">
-    {/* Van Body */}
-    <rect x="30" y="80" width="140" height="60" rx="10" fill="#4A90E2" />
-    <rect x="100" y="60" width="50" height="40" rx="5" fill="#357ABD" />
-
-    {/* Windows */}
-    <rect x="40" y="90" width="50" height="30" rx="5" fill="#A5D0F7" />
-    <rect x="105" y="70" width="40" height="20" rx="3" fill="#A5D0F7" />
-
-    {/* Wheels */}
-    <circle cx="60" cy="150" r="12" fill="#333" />
-    <circle cx="60" cy="150" r="6" fill="#CCC" />
-    <circle cx="140" cy="150" r="12" fill="#333" />
-    <circle cx="140" cy="150" r="6" fill="#CCC" />
-
-    {/* Headlights */}
-    <circle cx="40" cy="100" r="5" fill="#FFD700" />
-
-    {/* Smiley Face */}
-    <circle cx="170" cy="95" r="5" fill="#333" />
-    <path d="M165 110 Q170 115 175 110" stroke="#333" strokeWidth="2" fill="none" />
-
-    {/* Decorative Stripe */}
-    <rect x="35" y="115" width="130" height="5" fill="#FFD700" />
-  </svg>
-);
+gsap.registerPlugin(ScrollToPlugin);
 
 export default function Home() {
-  // Refs for each component section
-  const vanRef = useRef(null);
-  const portfolioRef = useRef(null);
-  const sliderRef = useRef(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const guideRef = useRef(null);
+
+  const steps = [
+    { target: ".tour-hero", label: "Hero Section" },
+    { target: ".tour-section-slider", label: "Van Tours" },
+    { target: ".tour-customizer", label: "Van Customizer" },
+    { target: ".tour-portfolio", label: "Portfolio" },
+    { target: ".tour-custom-van", label: "Custom Vans" },
+    { target: ".tour-elevator-bed", label: "Elevator Bed" },
+    { target: ".tour-installation", label: "Installation" },
+    { target: ".tour-shop", label: "Shop" },
+    { target: ".tour-reviews", label: "Reviews" },
+  ];
 
   useEffect(() => {
-    setIsMounted(true);
+    gsap.fromTo(
+      guideRef.current,
+      { y: 100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }
+    );
   }, []);
 
-  useEffect(() => {
-    if (!isMounted) return;
-
-    const intro = IntroJs();
-    intro.setOptions({
-      steps: [
-        {
-          element: "#intro-step",
-          intro: `
-            <div class="text-center">
-              <div class="flex justify-center mb-4">
-                ${document.getElementById('van-mascot')?.outerHTML || ''}
-              </div>
-              <h2 class="text-xl font-bold mb-2">Welcome to Van Customizer!</h2>
-              <p class="mb-4">Hi there! I'm Vanny, your van customization guide.<br>What would you like to explore first?</p>
-              <div class="flex flex-col gap-3 mt-4">
-                <button id="btn-van" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">Van Customizer</button>
-                <button id="btn-portfolio" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Portfolio</button>
-                <button id="btn-slider" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">Section Slider</button>
-              </div>
-            </div>
-          `,
-        },
-      ],
-      showBullets: false,
-      showStepNumbers: false,
-      exitOnOverlayClick: true,
-      exitOnEsc: true,
-      overlayOpacity: 0.7,
-      tooltipClass: 'introTooltipCustom',
-      highlightClass: 'introHighlightCustom'
-    });
-
-    // Add custom styles for the intro.js tooltip
-    const style = document.createElement('style');
-    style.textContent = `
-      .introTooltipCustom {
-        border-radius: 12px;
-        padding: 20px;
-        max-width: 400px;
-      }
-      .introHighlightCustom {
-        border-radius: 8px;
-      }
-      .introjs-tooltip-title {
-        font-size: 1.25rem;
-        margin-bottom: 0.5rem;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Function to handle scrolling
-    const scrollToRef = (ref) => {
-      if (ref && ref.current) {
-        ref.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-        intro.exit();
-      }
-    };
-
-
-    intro.start();
-
-
-    intro.onafterchange(() => {
-      setTimeout(() => {
-        document.getElementById("btn-van")?.addEventListener("click", () => scrollToRef(vanRef));
-        document.getElementById("btn-portfolio")?.addEventListener("click", () => scrollToRef(portfolioRef));
-        document.getElementById("btn-slider")?.addEventListener("click", () => scrollToRef(sliderRef));
-      }, 100);
-    });
-
-    // Clean up
-    return () => {
-      intro.exit();
-      document.head.removeChild(style);
-    };
-  }, [isMounted]);
+  const goToSection = (target) => {
+    const element = document.querySelector(target);
+    if (element) {
+      gsap.to(window, {
+        duration: 1,
+        scrollTo: element,
+        ease: "power2.inOut",
+      });
+    }
+  };
 
   return (
-    <div className="space-y-20 relative">
-      {/* Hidden mascot for Intro.js to use */}
-      <div id="van-mascot" style={{ display: 'none' }}>
-        <VanMascot />
+    <>
+      {/* GSAP Floating Guide */}
+      <div
+        ref={guideRef}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          background: "#fff",
+          padding: "16px",
+          borderRadius: "12px",
+          boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
+          maxWidth: "300px",
+          zIndex: 9999,
+        }}
+      >
+        <p style={{ marginBottom: "10px", fontWeight: "500" }}>
+          🚀 Where do you want to go?
+        </p>
+
+        {/* 3D Robo Model */}
+        <div
+          style={{
+            width: "180px",
+            height: "180px",
+            margin: "8px auto 12px",
+            borderRadius: "12px",
+            overflow: "hidden",
+            backgroundColor: "#f8fafc",
+          }}
+        >
+          <Canvas camera={{ position: [0, 0, 5] }}>
+            <ambientLight intensity={0.8} />
+            <directionalLight position={[5, 5, 5]} intensity={1} />
+            <Robo />
+          </Canvas>
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+          {steps.map((s, idx) => (
+            <button
+              key={idx}
+              onClick={() => goToSection(s.target)}
+              style={{
+                background: "#6366f1",
+                color: "#fff",
+                padding: "6px 10px",
+                borderRadius: "8px",
+                border: "none",
+                cursor: "pointer",
+                flex: "1 1 45%",
+              }}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Intro.js anchor - positioned more appropriately */}
-      <div id="intro-step" className="absolute top-20 left-0 w-full h-0"></div>
+      {/* Page Sections */}
+      <div className="tour-hero"><Hero /></div>
+      <div className="tour-section-slider"><SectioSlider /></div>
+      <div className="tour-customizer"><VanCustomizer /></div>
+      <div className="tour-portfolio"><Portfolio /></div>
+      <div className="tour-custom-van"><CustomVanSection /></div>
+      <div className="tour-elevator-bed"><ElevatorBedModel /></div>
+      <div className="tour-installation"><ElevatorBedInVan /></div>
+      <div className="tour-shop"><ShopSection /></div>
+      <div className="tour-reviews"><ReviewSlider /></div>
 
-      <Hero />
-      <div ref={sliderRef}><SectioSlider /></div>
-      <div ref={vanRef}><VanCustomizer /></div>
-      <div ref={portfolioRef}><Portfolio /></div>
-
-      <CustomVanSection />
-      <ElevatorBedModel />
-      <ElevatorBedInVan />
-      <ShopSection />
-      <ReviewSlider />
-
-      {/* Sticky Bottom Bar */}
       <StickyBottomBar />
-    </div>
+    </>
   );
 }
